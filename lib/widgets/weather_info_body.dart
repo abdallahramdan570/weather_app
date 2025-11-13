@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:weather_app/cubit/weather_cubit/weather_cubit.dart';
 import 'package:weather_app/cubits/get_weather_cubits/get_weather_cubits.dart';
 import 'package:weather_app/main.dart';
 import 'package:weather_app/models/weather_model.dart';
@@ -10,7 +11,7 @@ class WeatherInfoBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     WeatherModel weatherMobel =
-        BlocProvider.of<GetWeatherCubits>(context).weatherModel!;
+        BlocProvider.of<WeatherCubit>(context).weatherModel!;
     weatherMobel.image.contains("https");
 
     return Container(

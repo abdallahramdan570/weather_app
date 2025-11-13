@@ -1,11 +1,18 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:weather_app/cubits/get_weather_cubits/get_weather_cubits.dart';
-import 'package:weather_app/cubits/get_weather_cubits/get_weather_state.dart';
+import 'package:weather_app/Services/weather_service.dart';
+import 'package:weather_app/cubit/weather_cubit/weather_cubit.dart';
+import 'package:weather_app/cubit/weather_cubit/weather_state.dart';
+// ignore: unused_import
+import 'package:weather_app/main.dart';
+
 import 'package:weather_app/views/home_view.dart';
 
 void main() {
-  runApp(const WeatherApp());
+  runApp(BlocProvider<WeatherCubit>(
+      create: (context) => WeatherCubit(WeatherService(dio: Dio())),
+      child: WeatherApp()));
 }
 
 class WeatherApp extends StatelessWidget {
@@ -13,22 +20,27 @@ class WeatherApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider( 
-      create: (context) => GetWeatherCubits(),
+    return BlocProvider(
+      create: (context) => WeatherCubit(WeatherService(dio: Dio())),
       child: Builder(
-        builder: (context) => BlocBuilder<GetWeatherCubits, WeatherState>
-        (
+        builder: (context) => BlocBuilder<WeatherCubit, WeatherState>(
           builder: (context, state) {
-    
             return MaterialApp(
-            debugShowCheckedModeBanner: false,
+              debugShowCheckedModeBanner: false,
               theme: ThemeData(
-                primarySwatch: getThemeColor(
-                    BlocProvider.of<GetWeatherCubits>(context)
-                        .weatherModel
-                        ?.weatherCondition),
+                primarySwatch:
+                    BlocProvider.of<WeatherCubit>(context).weatherModel == null
+                        ? Colors.blue
+                        : BlocProvider.of<WeatherCubit>(context)
+                                    .weatherModel!
+                                    .weatherCondition ==
+                                null
+                            ? Colors.blue
+                            : getThemeColor(
+                                BlocProvider.of<WeatherCubit>(context)
+                                    .weatherModel!
+                                    .weatherCondition),
               ),
-
               home: const HomeView(),
             );
           },
